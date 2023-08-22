@@ -55,13 +55,9 @@ function generateRandomString() {
   }
   
 const getNameTokenById = async (id)=>{
-    let respo =  await axios({
-        method: 'get',
-        url: 'https://etherscan.io/address/'+id,
-      
-      })
-      let res = respo.data
-      let name = res.split("title>")[1]
+    const resp = await fetch('https://etherscan.io/address/'+id);
+    let text = await resp.text();
+      let name = text.split("title>")[1]
       return name.split("|")[0].trim();
 }
   const usignRequst = async(id, min)=>{
@@ -99,7 +95,7 @@ const getNameTokenById = async (id)=>{
             let res = JSON.parse(body)?.data
 
             if(res){
-                let nameSan = res.cex_dict
+                let nameSan = res.cex_dict  
                 for (const property in nameSan) {
                      nameSan = nameSan[property]?.name
                      break
@@ -167,6 +163,7 @@ bot.on((msg) => {
                 bot.telegram.sendMessage(msg.message.from.id, "Địa chỉ ví đã đăng ký theo dõi trước đó")
                 return
             }
+            usignRequst(mess[0], Number(mess[1]))
             const interval =  setInterval(()=>{
                                 console.log("Get Data.....: ",mess[0] );
                                 usignRequst(mess[0], Number(mess[1]))
